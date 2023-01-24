@@ -1,11 +1,9 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Board from "./components/Board";
 
 function App() {
   return (
     <div className="App">
-      <h1 className='text-red-500'> Hello world</h1>
+      <Board />
     </div>
   );
 }

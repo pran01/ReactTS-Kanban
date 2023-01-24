@@ -2,7 +2,15 @@
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "bgclr-dark": "#333333",
+        "fgclr-light": "#EBECF0",
+      },
+      fontFamily: {
+        inter: "'Inter', sans-serif",
+      },
+    },
   },
   plugins: [],
 };
