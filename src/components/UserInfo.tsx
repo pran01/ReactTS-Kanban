@@ -7,7 +7,7 @@ type userProp = {
 const UserInfo = ({ username }: userProp) => {
   const [userMenu, setUserMenu] = useState(false);
   return (
-    <div className="relative w-full h-12 flex items-center justify-end px-4">
+    <div className="relative w-full h-12 flex items-center justify-end px-4 z-0">
       <button
         className="border border-white bg-fgclr-light rounded-full w-max px-4 flex items-center justify-center"
         onClick={() => setUserMenu(!userMenu)}>
