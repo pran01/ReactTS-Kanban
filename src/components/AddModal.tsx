@@ -5,13 +5,21 @@ type Task = {
   name: string;
   details?: string;
   image?: string;
-  status: "To Do" | "In Progress" | "Done";
+  status: string;
 };
 type modalProps = {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  currentTaskStatus: "To Do" | "In Progress" | "Done";
+  currentTaskStatus: string;
   list: Task[];
   setList: React.Dispatch<React.SetStateAction<Task[]>>;
+  taskName: string;
+  setTaskName: React.Dispatch<React.SetStateAction<string>>;
+  details: string;
+  setDetails: React.Dispatch<React.SetStateAction<string>>;
+  src: string;
+  setSrc: React.Dispatch<React.SetStateAction<string>>;
+  editModal: boolean;
+  taskId: number;
 };
 
 const AddModal = ({
@@ -19,37 +27,68 @@ const AddModal = ({
   currentTaskStatus,
   list,
   setList,
+  taskName,
+  setTaskName,
+  details,
+  setDetails,
+  src,
+  setSrc,
+  editModal,
+  taskId,
 }: modalProps) => {
-  const [detailsOn, setDetailsOn] = useState(false);
+  const [detailsOn, setDetailsOn] = useState(details !== "");
   const [imageChoice, setImageChoice] = useState(false);
-  const [taskName, setTaskName] = useState("");
-  const [details, setDetails] = useState("");
-  const [src, setSrc] = useState("");
   let taskMid: Task;
   const saveTask = () => {
-    if (list.length === 0) {
-      taskMid = {
-        ...taskMid,
-        id: 0,
-        name: taskName,
-        status: currentTaskStatus,
-      };
+    if (editModal) {
+      let taskList = [...list];
+      for (let task of taskList) {
+        if (task.id === taskId) {
+          task.name = taskName;
+          task.details = details;
+          task.image = src;
+        }
+      }
+      setList(taskList);
+      localStorage.setItem("list", JSON.stringify(taskList));
     } else {
-      taskMid = {
-        ...taskMid,
-        id: list[list.length - 1].id + 1,
-        name: taskName,
-        status: currentTaskStatus,
-      };
+      if (list.length === 0) {
+        taskMid = {
+          ...taskMid,
+          id: 0,
+          name: taskName,
+          status: currentTaskStatus,
+        };
+      } else {
+        taskMid = {
+          ...taskMid,
+          id: list[list.length - 1].id + 1,
+          name: taskName,
+          status: currentTaskStatus,
+        };
+      }
+      if (details !== "") taskMid = { ...taskMid, details: details };
+      if (src !== "") taskMid = { ...taskMid, image: src };
+      let tempList = [...list, taskMid];
+      setList(tempList);
+      localStorage.setItem("list", JSON.stringify(tempList));
     }
-    if (details !== "") taskMid = { ...taskMid, details: details };
-    if (src !== "") taskMid = { ...taskMid, image: src };
-    let tempList = [...list, taskMid];
-    setList(tempList);
-    localStorage.setItem("list", JSON.stringify(tempList));
-    console.log(taskMid.id);
     setModalOpen(false);
   };
+
+  const deleteTask = () => {
+    let taskList = [...list];
+    taskList = taskList.filter((task) => {
+      if (task.id !== taskId) return task;
+    });
+    taskList.sort((task1, task2) =>
+      task1.id > task2.id ? 1 : task2.id > task1.id ? -1 : 0
+    );
+    setList(taskList);
+    localStorage.setItem("list", JSON.stringify(taskList));
+    setModalOpen(false);
+  };
+
   const setImage = (src: string) => {
     setSrc(src);
     setImageChoice(false);
@@ -110,11 +149,20 @@ const AddModal = ({
             value={details}
             onChange={(e) => setDetails(e.target.value)}></textarea>
         )}
-        <button
-          className="bg-white px-6 py-1 rounded-md shadow-xl mt-2"
-          onClick={saveTask}>
-          Save
-        </button>
+        <div className="w-full flex justify-evenly">
+          <button
+            className="bg-white px-6 py-1 rounded-md shadow-xl mt-2"
+            onClick={saveTask}>
+            Save
+          </button>
+          {editModal && (
+            <button
+              className="bg-white px-6 py-1 rounded-md shadow-xl mt-2 bg-red-500"
+              onClick={deleteTask}>
+              Delete
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

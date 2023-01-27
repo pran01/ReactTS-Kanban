@@ -1,23 +1,30 @@
-import React, { useState } from "react";
+import React from "react";
 
 type Task = {
   id: number;
   name: string;
   details?: string;
   image?: string;
-  status: "To Do" | "In Progress" | "Done";
+  status: string;
 };
 
 type columProps = {
-  status: "To Do" | "In Progress" | "Done";
+  status: string;
   list: Task[];
   setList: React.Dispatch<React.SetStateAction<Task[]>>;
   modalOpen: boolean;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  currentTaskStatus: "To Do" | "In Progress" | "Done";
-  setCurrentTaskStatus: React.Dispatch<
-    React.SetStateAction<"To Do" | "In Progress" | "Done">
-  >;
+  currentTaskStatus: string;
+  setCurrentTaskStatus: React.Dispatch<React.SetStateAction<string>>;
+  taskName: string;
+  setTaskName: React.Dispatch<React.SetStateAction<string>>;
+  details: string;
+  setDetails: React.Dispatch<React.SetStateAction<string>>;
+  src: string;
+  setSrc: React.Dispatch<React.SetStateAction<string>>;
+  setEditModal: React.Dispatch<React.SetStateAction<boolean>>;
+
+  setTaskId: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const Columns = ({
@@ -28,6 +35,14 @@ const Columns = ({
   setModalOpen,
   currentTaskStatus,
   setCurrentTaskStatus,
+  taskName,
+  setTaskName,
+  details,
+  setDetails,
+  src,
+  setSrc,
+  setEditModal,
+  setTaskId,
 }: columProps) => {
   const startDrag = (event: React.DragEvent<HTMLDivElement>, id: number) => {
     event.dataTransfer?.setData("id", `${id}`);
@@ -35,10 +50,7 @@ const Columns = ({
   const dragOver = (event: React.DragEvent) => {
     event.preventDefault();
   };
-  const drop = (
-    event: React.DragEvent<HTMLElement>,
-    status: "To Do" | "In Progress" | "Done"
-  ) => {
+  const drop = (event: React.DragEvent<HTMLElement>, status: string) => {
     let id: number = +event.dataTransfer.getData("id");
     let tasks = [...list];
     tasks = tasks.filter((task) => {
@@ -51,18 +63,35 @@ const Columns = ({
     localStorage.setItem("list", JSON.stringify(tasks));
   };
 
+  const editTask = (task: Task) => {
+    console.log(task);
+    setTaskId(task.id);
+    setTaskName(task.name);
+    if (task.details) setDetails(task.details);
+    if (task.image) setSrc(task.image);
+    setCurrentTaskStatus(task.status);
+    setEditModal(true);
+    setModalOpen(true);
+    console.log(task.id);
+  };
+
+  const openNewModal = () => {
+    setTaskName("");
+    setDetails("");
+    setSrc("");
+    setModalOpen(true);
+    setEditModal(false);
+    setCurrentTaskStatus(status);
+  };
+
   return (
     <section
-      className="w-64 h-max bg-fgclr-light rounded-md mt-8 font-inter px-4 pb-4"
+      className="w-64 max-w-64 h-max bg-fgclr-light rounded-md mt-20 font-inter px-4 pb-2 mx-4"
       onDragOver={(event) => dragOver(event)}
       onDrop={(event) => drop(event, status)}>
       <header className="w-full h-12 flex items-center justify-between px-2 font-bold">
         {status}
-        <button
-          onClick={() => {
-            setModalOpen(true);
-            setCurrentTaskStatus(status);
-          }}>
+        <button onClick={openNewModal}>
           <i className="fa-solid fa-circle-plus"></i>
         </button>
       </header>
@@ -71,10 +100,11 @@ const Columns = ({
         (task, id) =>
           task.status === status && (
             <div
-              className={`relative h-max rounded-md bg-white shadow p-2 mb-2`}
+              className={`relative h-max rounded-md bg-white shadow p-2 mb-4`}
               key={task.details}
               draggable={true}
-              onDragStart={(event) => startDrag(event, task.id)}>
+              onDragStart={(event) => startDrag(event, task.id)}
+              onClick={() => editTask(task)}>
               {task.image && (
                 <img
                   src={require("../assets/images/" + task.image)}
