@@ -6,12 +6,26 @@ type Task = {
   details?: string;
   image?: string;
   status: string;
+  members: number[];
+};
+
+type User = {
+  id: number;
+  username: string;
+  password: string;
+  team_id: number;
+  notifications: string[];
+};
+
+type Team = {
+  id: number;
+  list: Task[];
 };
 
 type columProps = {
   status: string;
   list: Task[];
-  setList: React.Dispatch<React.SetStateAction<Task[]>>;
+  setList: (list: Task[]) => void;
   modalOpen: boolean;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   currentTaskStatus: string;
@@ -25,6 +39,8 @@ type columProps = {
   setEditModal: React.Dispatch<React.SetStateAction<boolean>>;
 
   setTaskId: React.Dispatch<React.SetStateAction<number>>;
+  taggedMembers: User[];
+  setTaggedMembers: React.Dispatch<React.SetStateAction<User[]>>;
 };
 
 const Columns = ({
@@ -43,6 +59,8 @@ const Columns = ({
   setSrc,
   setEditModal,
   setTaskId,
+  taggedMembers,
+  setTaggedMembers,
 }: columProps) => {
   const startDrag = (event: React.DragEvent<HTMLDivElement>, id: number) => {
     event.dataTransfer?.setData("id", `${id}`);
@@ -60,11 +78,10 @@ const Columns = ({
       return tasks;
     });
     setList(tasks);
-    localStorage.setItem("list", JSON.stringify(tasks));
+    // localStorage.setItem("list", JSON.stringify(tasks));
   };
 
   const editTask = (task: Task) => {
-    console.log(task);
     setTaskId(task.id);
     setTaskName(task.name);
     if (task.details) setDetails(task.details);
@@ -72,7 +89,6 @@ const Columns = ({
     setCurrentTaskStatus(task.status);
     setEditModal(true);
     setModalOpen(true);
-    console.log(task.id);
   };
 
   const openNewModal = () => {
@@ -101,7 +117,7 @@ const Columns = ({
           task.status === status && (
             <div
               className={`relative h-max rounded-md bg-white shadow p-2 mb-4`}
-              key={task.details}
+              key={id}
               draggable={true}
               onDragStart={(event) => startDrag(event, task.id)}
               onClick={() => editTask(task)}>

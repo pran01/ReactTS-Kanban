@@ -1,17 +1,30 @@
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
 type Task = {
   id: number;
   name: string;
   details?: string;
   image?: string;
   status: string;
+  members: number[];
+};
+
+type User = {
+  id: number;
+  username: string;
+  password: string;
+  team_id: number;
+  notifications: string[];
+};
+
+type Team = {
+  id: number;
+  list: Task[];
 };
 type modalProps = {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   currentTaskStatus: string;
   list: Task[];
-  setList: React.Dispatch<React.SetStateAction<Task[]>>;
+  setList: (list: Task[]) => void;
   taskName: string;
   setTaskName: React.Dispatch<React.SetStateAction<string>>;
   details: string;
@@ -20,6 +33,12 @@ type modalProps = {
   setSrc: React.Dispatch<React.SetStateAction<string>>;
   editModal: boolean;
   taskId: number;
+  usersList: User[];
+  currentUser: User;
+  taggedMembers: User[];
+  setTaggedMembers: React.Dispatch<React.SetStateAction<User[]>>;
+  addUser: (id: number, user: User) => void;
+  removeUser: (id: number, user: User) => void;
 };
 
 const AddModal = ({
@@ -35,10 +54,36 @@ const AddModal = ({
   setSrc,
   editModal,
   taskId,
+  usersList,
+  currentUser,
+  taggedMembers,
+  setTaggedMembers,
+  addUser,
+  removeUser,
 }: modalProps) => {
   const [detailsOn, setDetailsOn] = useState(details !== "");
   const [imageChoice, setImageChoice] = useState(false);
+  const [membersToTag, setMembersToTag] = useState(false);
   let taskMid: Task;
+  useEffect(() => {
+    getTaggedMembers();
+  }, []);
+
+  const getTaggedMembers = () => {
+    if (editModal) {
+      let members: number[];
+      for (let task of list) {
+        if (task.id === taskId) members = task.members;
+      }
+      let userMembers: User[] = [];
+      usersList.forEach((user) => {
+        if (members.includes(user.id)) userMembers.push(user);
+      });
+      setTaggedMembers(userMembers);
+    } else setTaggedMembers([]);
+  };
+  const changeTaggedMembers = () => {};
+
   const saveTask = () => {
     if (editModal) {
       let taskList = [...list];
@@ -50,7 +95,7 @@ const AddModal = ({
         }
       }
       setList(taskList);
-      localStorage.setItem("list", JSON.stringify(taskList));
+      // localStorage.setItem("list", JSON.stringify(taskList));
     } else {
       if (list.length === 0) {
         taskMid = {
@@ -71,7 +116,7 @@ const AddModal = ({
       if (src !== "") taskMid = { ...taskMid, image: src };
       let tempList = [...list, taskMid];
       setList(tempList);
-      localStorage.setItem("list", JSON.stringify(tempList));
+      // localStorage.setItem("list", JSON.stringify(tempList));
     }
     setModalOpen(false);
   };
@@ -85,7 +130,7 @@ const AddModal = ({
       task1.id > task2.id ? 1 : task2.id > task1.id ? -1 : 0
     );
     setList(taskList);
-    localStorage.setItem("list", JSON.stringify(taskList));
+    // localStorage.setItem("list", JSON.stringify(taskList));
     setModalOpen(false);
   };
 
@@ -93,6 +138,25 @@ const AddModal = ({
     setSrc(src);
     setImageChoice(false);
   };
+
+  const tagMembers = () => {
+    setMembersToTag(!membersToTag);
+  };
+  // const addUser = (user: User) => {
+  //   let taggedMembersCopy = [...taggedMembers];
+  //   taggedMembersCopy.push(user);
+  //   setTaggedMembers(taggedMembersCopy);
+  //   console.log(taskId);
+  // };
+  // const removeUser = (user: User) => {
+  //   let taggedMembersCopy = [...taggedMembers];
+  //   const index = taggedMembersCopy.indexOf(user);
+  //   if (index > -1) {
+  //     taggedMembersCopy.splice(index, 1);
+  //   }
+  //   setTaggedMembers(taggedMembersCopy);
+  //   console.log(taskId);
+  // };
   return (
     <div className="absolute w-screen h-screen bg-black/80 top-0 left-0 z-[100] flex justify-center items-center">
       <div
@@ -107,8 +171,14 @@ const AddModal = ({
           value={taskName}
           onChange={(e) => setTaskName(e.target.value)}
         />
+        {taggedMembers.length > 0 && (
+          <div className="mt-2 flex">
+            <b>Members</b> :{" "}
+            {taggedMembers.map((member, key) => member.username + ", ")}
+          </div>
+        )}
         <div className="w-full flex justify-evenly py-2">
-          <button>
+          <button onClick={tagMembers}>
             <i className="fa-solid fa-users"></i> Tag
           </button>
           <button onClick={() => setDetailsOn(!detailsOn)}>
@@ -118,6 +188,42 @@ const AddModal = ({
             <i className="fa-solid fa-panorama"></i> Background
           </button>
         </div>
+        {membersToTag && (
+          <div className="absolute top-24 left-24 shadow-xl rounded-lg border-2 border-black w-max h-max flex flex-col justify-evenly content-evenly bg-white z-[104]">
+            {/* color group */}
+            <div className="flex justify-evenly px-2">
+              Members{" "}
+              <button
+                className="ml-2 text-xs"
+                onClick={() => setMembersToTag(false)}>
+                <i className="fa-solid fa-xmark-circle"></i>
+              </button>
+            </div>
+            {usersList.map(
+              (user, key) =>
+                user.team_id === currentUser.team_id && (
+                  <div
+                    key={key}
+                    className="px-4 py-1 flex justify-center items-center">
+                    <input
+                      type="checkbox"
+                      name="team-members"
+                      id={"" + user.id}
+                      className="mr-2"
+                      checked={taggedMembers.includes(user)}
+                      onChange={() => {
+                        taggedMembers.includes(user)
+                          ? removeUser(taskId, user)
+                          : addUser(taskId, user);
+                      }}
+                    />{" "}
+                    <label htmlFor={"" + user.id}>{user.username}</label>
+                  </div>
+                )
+            )}
+          </div>
+        )}
+
         {imageChoice && (
           <div className="absolute top-10 left-10 shadow-xl rounded-lg border-2 border-black w-fit h-max flex flex-wrap justify-evenly content-evenly my-2 bg-white z-[104]">
             {/* color group */}

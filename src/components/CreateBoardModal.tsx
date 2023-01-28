@@ -8,8 +8,11 @@ const CreateBoardModal = ({ setCreateMode }: CreateModalProps) => {
   const [screen, setScreen] = useState(1);
   const [boardName, setBoardName] = useState("");
   const [nameError, setNameError] = useState(false);
-  const [columnId, setColumnId] = useState(0);
   const [createBoardError, setCreateBoardError] = useState(false);
+  const [mandatoryCol1, setMandatoryCol1] = useState("To Do");
+  const [mandatoryCol2, setMandatoryCol2] = useState("In Progress");
+  const [mandatoryCol3, setMandatoryCol3] = useState("Done");
+
   const saveBoardName = () => {
     if (boardName === "") setNameError(true);
     else {
@@ -60,7 +63,7 @@ const CreateBoardModal = ({ setCreateMode }: CreateModalProps) => {
             />
             {nameError && (
               <span className="text-xs self-start text-red-500">
-                Atleast give a name first
+                Board name can not be empty
               </span>
             )}
             <button
@@ -73,7 +76,32 @@ const CreateBoardModal = ({ setCreateMode }: CreateModalProps) => {
         {screen === 2 && (
           <div className="w-full h-full flex flex-col items-center">
             <label className="font-bold">Columns</label>
-            <div className="flex flex-col" id="column-names"></div>
+            <div className="flex flex-col" id="column-names">
+              <div className="w-full flex justify-between mb-2">
+                <input
+                  type="text"
+                  className="w-2/3 px-2 h-8 rounded-md shadow-lg border-b-2 border-black"
+                  value={mandatoryCol1}
+                  onChange={(e) => setMandatoryCol1(e.target.value)}
+                />
+              </div>
+              <div className="w-full flex justify-between mb-2">
+                <input
+                  type="text"
+                  className="w-2/3 px-2 h-8 rounded-md shadow-lg border-b-2 border-black"
+                  value={mandatoryCol2}
+                  onChange={(e) => setMandatoryCol2(e.target.value)}
+                />
+              </div>
+              <div className="w-full flex justify-between mb-2">
+                <input
+                  type="text"
+                  className="w-2/3 px-2 h-8 rounded-md shadow-lg border-b-2 border-black"
+                  value={mandatoryCol3}
+                  onChange={(e) => setMandatoryCol3(e.target.value)}
+                />
+              </div>
+            </div>
             <button
               className="w-max px-2 bg-white rounded-md shadow-md self-center mt-4"
               onClick={addColumn}>
