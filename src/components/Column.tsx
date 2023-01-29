@@ -9,58 +9,32 @@ type Task = {
   members: number[];
 };
 
-type User = {
-  id: number;
-  username: string;
-  password: string;
-  team_id: number;
-  notifications: string[];
-};
-
-type Team = {
-  id: number;
-  list: Task[];
-};
-
 type columProps = {
   status: string;
   list: Task[];
   setList: (list: Task[]) => void;
-  modalOpen: boolean;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  currentTaskStatus: string;
   setCurrentTaskStatus: React.Dispatch<React.SetStateAction<string>>;
-  taskName: string;
   setTaskName: React.Dispatch<React.SetStateAction<string>>;
   details: string;
   setDetails: React.Dispatch<React.SetStateAction<string>>;
-  src: string;
   setSrc: React.Dispatch<React.SetStateAction<string>>;
   setEditModal: React.Dispatch<React.SetStateAction<boolean>>;
 
   setTaskId: React.Dispatch<React.SetStateAction<number>>;
-  taggedMembers: User[];
-  setTaggedMembers: React.Dispatch<React.SetStateAction<User[]>>;
 };
 
 const Columns = ({
   status,
   list,
   setList,
-  modalOpen,
   setModalOpen,
-  currentTaskStatus,
   setCurrentTaskStatus,
-  taskName,
   setTaskName,
-  details,
   setDetails,
-  src,
   setSrc,
   setEditModal,
   setTaskId,
-  taggedMembers,
-  setTaggedMembers,
 }: columProps) => {
   const startDrag = (event: React.DragEvent<HTMLDivElement>, id: number) => {
     event.dataTransfer?.setData("id", `${id}`);

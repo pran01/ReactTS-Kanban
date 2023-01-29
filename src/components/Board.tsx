@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Columns from "./Column";
 import AddModal from "./AddModal";
 import UserInfo from "./UserInfo";
@@ -41,7 +41,7 @@ const Board = () => {
   const [taskId, setTaskId] = useState<number>(0);
   const [createMode, setCreateMode] = useState(false);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
-  const [usersList, setUsersList] = useState<User[]>([
+  const [usersList] = useState<User[]>([
     {
       id: 1,
       username: "user1",
@@ -257,58 +257,40 @@ const Board = () => {
               status="To Do"
               list={getUsersList()!}
               setList={changeUsersList}
-              modalOpen={modalOpen}
               setModalOpen={setModalOpen}
-              currentTaskStatus={currentTaskStatus}
               setCurrentTaskStatus={setCurrentTaskStatus}
-              taskName={taskName}
               setTaskName={setTaskName}
               details={details}
               setDetails={setDetails}
-              src={src}
               setSrc={setSrc}
               setEditModal={setEditModal}
               setTaskId={setTaskId}
-              taggedMembers={taggedMembers}
-              setTaggedMembers={setTaggedMembers}
             />
             <Columns
               status="In Progress"
               list={getUsersList()!}
               setList={changeUsersList}
-              modalOpen={modalOpen}
               setModalOpen={setModalOpen}
-              currentTaskStatus={currentTaskStatus}
               setCurrentTaskStatus={setCurrentTaskStatus}
-              taskName={taskName}
               setTaskName={setTaskName}
               details={details}
               setDetails={setDetails}
-              src={src}
               setSrc={setSrc}
               setEditModal={setEditModal}
               setTaskId={setTaskId}
-              taggedMembers={taggedMembers}
-              setTaggedMembers={setTaggedMembers}
             />
             <Columns
               status="Done"
               list={getUsersList()!}
               setList={changeUsersList}
-              modalOpen={modalOpen}
               setModalOpen={setModalOpen}
-              currentTaskStatus={currentTaskStatus}
               setCurrentTaskStatus={setCurrentTaskStatus}
-              taskName={taskName}
               setTaskName={setTaskName}
               details={details}
               setDetails={setDetails}
-              src={src}
               setSrc={setSrc}
               setEditModal={setEditModal}
               setTaskId={setTaskId}
-              taggedMembers={taggedMembers}
-              setTaggedMembers={setTaggedMembers}
             />
           </div>
         )}

@@ -1,25 +1,11 @@
 import { useState } from "react";
 
-type Task = {
-  id: number;
-  name: string;
-  details?: string;
-  image?: string;
-  status: string;
-  members: number[];
-};
-
 type User = {
   id: number;
   username: string;
   password: string;
   team_id: number;
   notifications: string[];
-};
-
-type Team = {
-  id: number;
-  list: Task[];
 };
 
 type userProp = {
