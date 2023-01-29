@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 type Task = {
   id: number;
   name: string;
@@ -60,9 +60,6 @@ const AddModal = ({
   const [imageChoice, setImageChoice] = useState(false);
   const [membersToTag, setMembersToTag] = useState(false);
   let taskMid: Task;
-  useEffect(() => {
-    getTaggedMembers();
-  }, []);
 
   const getUserIdFromUsersList = (users: User[]): number[] => {
     let userIds: number[] = [];
@@ -72,7 +69,7 @@ const AddModal = ({
     return userIds;
   };
 
-  const getTaggedMembers = () => {
+  const getTaggedMembers = useCallback(() => {
     if (editModal) {
       let members: number[];
       for (let task of list) {
@@ -84,7 +81,10 @@ const AddModal = ({
       });
       setTaggedMembers(userMembers);
     } else setTaggedMembers([]);
-  };
+  }, [taskId, editModal, list, setTaggedMembers, usersList]);
+  useEffect(() => {
+    getTaggedMembers();
+  }, [getTaggedMembers]);
 
   const saveTask = () => {
     if (editModal) {
@@ -106,6 +106,8 @@ const AddModal = ({
           name: taskName,
           status: currentTaskStatus,
           members: getUserIdFromUsersList(taggedMembers),
+          details: details,
+          image: src,
         };
       } else {
         taskMid = {
@@ -114,10 +116,10 @@ const AddModal = ({
           name: taskName,
           status: currentTaskStatus,
           members: getUserIdFromUsersList(taggedMembers),
+          details: details,
+          image: src,
         };
       }
-      if (details !== "") taskMid = { ...taskMid, details: details };
-      if (src !== "") taskMid = { ...taskMid, image: src };
       let tempList = [...list, taskMid];
       setList(tempList);
       // localStorage.setItem("list", JSON.stringify(tempList));
@@ -127,9 +129,7 @@ const AddModal = ({
 
   const deleteTask = () => {
     let taskList = [...list];
-    taskList = taskList.filter((task) => {
-      if (task.id !== taskId) return task;
-    });
+    taskList = taskList.filter((task) => task.id !== taskId);
     taskList.sort((task1, task2) =>
       task1.id > task2.id ? 1 : task2.id > task1.id ? -1 : 0
     );

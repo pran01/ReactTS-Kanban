@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import {getFirestore} from '@firebase/firestore';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBeN8VGTjw_6YocD2eFjhDow_DfmFPX0UU",
-    authDomain: "reactts-kanban.firebaseapp.com",
-    projectId: "reactts-kanban",
-    storageBucket: "reactts-kanban.appspot.com",
-    messagingSenderId: "468464582155",
-    appId: "1:468464582155:web:0d32216b52d7c4c085110e",
-    measurementId: "G-DQTHD2TERK"
+  apiKey: "AIzaSyBx8gknrbjYe8IhrYvjg9Locrl5tGLVcbk",
+  authDomain: "kanban-react-d0399.firebaseapp.com",
+  projectId: "kanban-react-d0399",
+  storageBucket: "kanban-react-d0399.appspot.com",
+  messagingSenderId: "721130459904",
+  appId: "1:721130459904:web:06a1c62c67a40d709ad9e5",
+  measurementId: "G-119DFGGZYK"
   };
 
   const app = initializeApp(firebaseConfig);

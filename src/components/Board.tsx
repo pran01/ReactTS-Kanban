@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Columns from "./Column";
 import AddModal from "./AddModal";
 import UserInfo from "./UserInfo";
@@ -31,6 +31,12 @@ type Team = {
 };
 
 const Board = () => {
+  let teamcopy = [
+    { id: 1, list: [] },
+    { id: 2, list: [] },
+    { id: 3, list: [] },
+  ];
+  console.log(JSON.stringify(teamcopy));
   // const [list, setList] = useState<Task[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [currentTaskStatus, setCurrentTaskStatus] = useState<string>("To Do");
@@ -118,8 +124,7 @@ const Board = () => {
   const [taggedMembers, setTaggedMembers] = useState<User[]>([]);
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-
-  const teamsCollectionRef = collection(db, "teams");
+  const [fetch, setFetch] = useState(true);
 
   const updateTeams = async (id: string, teams: string) => {
     const teamDoc = doc(db, "teams", id);
@@ -170,16 +175,19 @@ const Board = () => {
     updateTeams("1", JSON.stringify(teamsCopy));
   };
 
-  const getUserByUsername = (username: string): User | undefined => {
-    let userToGet: User | undefined = undefined;
-    usersList.forEach((user) => {
-      if (user.username === username) {
-        userToGet = user;
-        return;
-      }
-    });
-    return userToGet;
-  };
+  const getUserByUsername = useCallback(
+    (username: string): User | undefined => {
+      let userToGet: User | undefined = undefined;
+      usersList.forEach((user) => {
+        if (user.username === username) {
+          userToGet = user;
+          return;
+        }
+      });
+      return userToGet;
+    },
+    [usersList]
+  );
 
   useEffect(() => {
     if (localStorage.getItem("loggedin")) {
@@ -192,12 +200,19 @@ const Board = () => {
     } else {
       setUserLoggedIn(false);
     }
-    const getTeams = async () => {
-      const data = await getDocs(teamsCollectionRef);
-      setTeams(JSON.parse(data.docs[0].data()["teams"]));
-    };
-    getTeams();
-  }, [getUserByUsername, teamsCollectionRef]);
+  }, [getUserByUsername]);
+
+  useEffect(() => {
+    if (fetch) {
+      console.log("fetching data");
+      const getTeams = async () => {
+        const data = await getDocs(collection(db, "teams"));
+        setTeams(JSON.parse(data.docs[0].data()["teams"]));
+      };
+      getTeams();
+      setFetch(false);
+    }
+  }, [fetch]);
 
   const loginUser = (username: string, password: string) => {
     const tryingUser = getUserByUsername(username);
