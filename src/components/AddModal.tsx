@@ -15,11 +15,6 @@ type User = {
   team_id: number;
   notifications: string[];
 };
-
-type Team = {
-  id: number;
-  list: Task[];
-};
 type modalProps = {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   currentTaskStatus: string;
@@ -90,7 +85,6 @@ const AddModal = ({
       setTaggedMembers(userMembers);
     } else setTaggedMembers([]);
   };
-  const changeTaggedMembers = () => {};
 
   const saveTask = () => {
     if (editModal) {
