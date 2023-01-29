@@ -116,7 +116,7 @@ const Columns = ({
         (task, id) =>
           task.status === status && (
             <div
-              className={`relative h-max rounded-md bg-white shadow p-2 mb-4`}
+              className={`relative h-max rounded-md bg-white shadow p-2 mb-4 z-[100]`}
               key={id}
               draggable={true}
               onDragStart={(event) => startDrag(event, task.id)}

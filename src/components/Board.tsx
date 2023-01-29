@@ -75,42 +75,42 @@ const Board = () => {
       username: "user5",
       password: "user5",
       team_id: 2,
-      notifications: [],
+      notifications: ["user7 invited you to board"],
     },
     {
       id: 6,
       username: "user6",
       password: "user6",
       team_id: 2,
-      notifications: [],
+      notifications: ["user5 invited you to board"],
     },
     {
       id: 7,
       username: "user7",
       password: "user7",
       team_id: 2,
-      notifications: [],
+      notifications: ["user6 invited you to board"],
     },
     {
       id: 8,
       username: "user8",
       password: "user8",
       team_id: 3,
-      notifications: [],
+      notifications: ["user9 invited you to board"],
     },
     {
       id: 9,
       username: "user9",
       password: "user9",
       team_id: 3,
-      notifications: [],
+      notifications: ["user10 invited you to board"],
     },
     {
       id: 10,
       username: "user10",
       password: "user10",
       team_id: 3,
-      notifications: [],
+      notifications: ["user9 invited you to board"],
     },
   ]);
   const [teams, setTeams] = useState<Team[]>([]);
@@ -247,7 +247,7 @@ const Board = () => {
         <CreateBoard createMode={createMode} setCreateMode={setCreateMode} />
         <UserInfo logOut={logOut} user={currentUser} />
         {teams.length > 0 && (
-          <div className="w-full min-w-max flex justify-evenly overflow-visible">
+          <div className="w-full min-w-max flex justify-evenly overflow-visible z-[10]">
             <Columns
               status="To Do"
               list={getUsersList()!}
