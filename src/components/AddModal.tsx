@@ -69,6 +69,14 @@ const AddModal = ({
     getTaggedMembers();
   }, []);
 
+  const getUserIdFromUsersList = (users: User[]): number[] => {
+    let userIds: number[] = [];
+    users.forEach((user) => {
+      userIds.push(user.id);
+    });
+    return userIds;
+  };
+
   const getTaggedMembers = () => {
     if (editModal) {
       let members: number[];
@@ -103,6 +111,7 @@ const AddModal = ({
           id: 0,
           name: taskName,
           status: currentTaskStatus,
+          members: getUserIdFromUsersList(taggedMembers),
         };
       } else {
         taskMid = {
@@ -110,6 +119,7 @@ const AddModal = ({
           id: list[list.length - 1].id + 1,
           name: taskName,
           status: currentTaskStatus,
+          members: getUserIdFromUsersList(taggedMembers),
         };
       }
       if (details !== "") taskMid = { ...taskMid, details: details };

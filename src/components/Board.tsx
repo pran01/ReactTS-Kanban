@@ -47,28 +47,28 @@ const Board = () => {
       username: "user1",
       password: "user1",
       team_id: 1,
-      notifications: [] as string[],
+      notifications: ["user4 invited you to the board"],
     },
     {
       id: 2,
       username: "user2",
       password: "user2",
       team_id: 1,
-      notifications: [],
+      notifications: ["user1 invited you to the board", "user1 moved the task"],
     },
     {
       id: 3,
       username: "user3",
       password: "user3",
       team_id: 1,
-      notifications: [],
+      notifications: ["user1 invited you to the board", "user1 moved the task"],
     },
     {
       id: 4,
       username: "user4",
       password: "user4",
       team_id: 1,
-      notifications: [],
+      notifications: ["user2 invited you to the board"],
     },
     {
       id: 5,
@@ -180,11 +180,6 @@ const Board = () => {
   };
 
   useEffect(() => {
-    const getTeams = async () => {
-      const data = await getDocs(teamsCollectionRef);
-      setTeams(JSON.parse(data.docs[0].data()["teams"]));
-    };
-    getTeams();
     if (localStorage.getItem("loggedin")) {
       setUserLoggedIn(JSON.parse(localStorage.getItem("loggedin")!));
       if (localStorage.getItem("currentuser")) {
@@ -195,7 +190,12 @@ const Board = () => {
     } else {
       setUserLoggedIn(false);
     }
-  }, []);
+    const getTeams = async () => {
+      const data = await getDocs(teamsCollectionRef);
+      setTeams(JSON.parse(data.docs[0].data()["teams"]));
+    };
+    getTeams();
+  }, [getUserByUsername, teamsCollectionRef]);
 
   const loginUser = (username: string, password: string) => {
     const tryingUser = getUserByUsername(username);
