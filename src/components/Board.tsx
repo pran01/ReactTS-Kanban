@@ -116,6 +116,8 @@ const Board = () => {
   const [teams, setTeams] = useState<Team[]>([]);
   const [currentUser, setCurrentUser] = useState<User>(usersList[0]);
   const [taggedMembers, setTaggedMembers] = useState<User[]>([]);
+  const [usernameError, setUsernameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const teamsCollectionRef = collection(db, "teams");
 
@@ -205,11 +207,14 @@ const Board = () => {
         setCurrentUser(tryingUser);
         localStorage.setItem("loggedin", JSON.stringify(true));
         localStorage.setItem("currentuser", tryingUser.username);
+        setUsernameError("");
+        setPasswordError("");
       } else {
-        console.log("password incorrect");
+        setUsernameError("");
+        setPasswordError("Password Incorrect");
       }
     } else {
-      console.log("No user found with that username");
+      setUsernameError("No user found with that username");
     }
   };
 
@@ -309,6 +314,13 @@ const Board = () => {
         )}
       </div>
     );
-  else return <Login loginUser={loginUser} />;
+  else
+    return (
+      <Login
+        loginUser={loginUser}
+        usernameError={usernameError}
+        passwordError={passwordError}
+      />
+    );
 };
 export default Board;

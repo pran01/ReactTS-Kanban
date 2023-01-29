@@ -2,9 +2,11 @@ import { useState } from "react";
 
 type LoginProps = {
   loginUser: (username: string, password: string) => void;
+  usernameError: string;
+  passwordError: string;
 };
 
-const Login = ({ loginUser }: LoginProps) => {
+const Login = ({ loginUser, usernameError, passwordError }: LoginProps) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   return (
@@ -19,7 +21,12 @@ const Login = ({ loginUser }: LoginProps) => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
-        <span className="text-xs self-start px-4">Hint: user1</span>
+        <span className="text-xs self-start px-4">Hint: user1 till user10</span>
+        {usernameError !== "" && (
+          <span className="text-xs text-red-500 self-start px-4">
+            {usernameError}
+          </span>
+        )}
 
         <input
           type="password"
@@ -28,7 +35,12 @@ const Login = ({ loginUser }: LoginProps) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <span className="text-xs self-start px-4">Hint: user1</span>
+        <span className="text-xs self-start px-4">Hint: user1 till user10</span>
+        {passwordError !== "" && (
+          <span className="text-xs text-red-500 self-start px-4">
+            {passwordError}
+          </span>
+        )}
         <button
           className="w-2/5 h-10 rounded-lg shadow-xl border-2 border-green-500 bg-green-400 mt-4"
           onClick={() => {
